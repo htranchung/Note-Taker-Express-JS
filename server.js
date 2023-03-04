@@ -12,22 +12,24 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static('public'));
 
-//GET Route for notes.html
+//GET Route for notes.html and console what kind of method is being requested
 app.get('/notes', (req, res) => {
     console.log(`${req.method} request received`);
     res.sendFile(path.join(__dirname, '/public/notes.html'))  
 });
-
+// displays the data from db.json in utf8 format
 app.get('/api/notes', (req, res) => {
     fs.readFile('./db/db.json', 'utf8', (err, data) => {
-        if (err) {
+        if (err) { // console error if error found
           console.error(err);
         }
         const jsonData = JSON.parse(data);
         res.json(jsonData);
+        // displays data
       });
 });
 
+//console what kind of method is being requested
 app.post('/api/notes', (req, res) => {
     console.log(`${req.method} request received`);
 
@@ -39,7 +41,7 @@ app.post('/api/notes', (req, res) => {
         // Parse JSON data into a JavaScript object
         const newNote = JSON.parse(data);
     
-        // Add new data to JavaScript object
+        // Add new data and adds id to JavaScript object
         const id = uuid();
         newNote.push({id, ...req.body});
     
@@ -55,13 +57,13 @@ app.post('/api/notes', (req, res) => {
       });
 });
 
-
+// route for all
 app.get('*', (req, res) =>
   res.sendFile(path.join(__dirname, '/public/index.html'))
 );
 
 
-
+// console.log what port the app is using
 app.listen(PORT, () =>
   console.log(`App listening at http://localhost:${PORT}`)
 );
